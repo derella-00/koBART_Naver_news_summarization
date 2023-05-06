@@ -40,6 +40,7 @@
                         success: function (data) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
                             var comments = data.comments; // 받아온 댓글 데이터 
                             var container = $('#comments-container'); // 댓글 컨테이너 요소
+                            var container_emotion = $('#emotion-container'); // 감정 분석 컨테이너 요소
                             if (comments < 5) {
                                 alert("There are not enough comments.")
                             }else {
@@ -55,6 +56,23 @@
                                     container.append(commentElement);
                                 }
                             }
+
+                            // 이 아래부터는 이렇게 하면 되지 않을까 하는 강한 추측이야
+                            // var container_emotion = $('#emotion-container'); // 감정 분석 컨테이너 요소 위에서 컨테이너 요소 정의했음
+                            
+                            var totalEmotionCount = 0;  // totalEmotionCount 초기화
+                            for(var i = 0; i < comments.length; i++) {
+                                var comment = comments[i];
+                                var emotion = comment.emotion;
+                                var len_emotion = emotion.length; // len_emotion 에 emotion 개수(?) 구하고 -> 여기서부터 뭔가 잘못된 것 같은 느낌적인 느낌쓰
+                                totalEmotionCount += len_emotion; 
+                            }
+
+                            var emotionCountElement = $('<div></div>');
+                            emotionCountElement.text('총 감정 분석 결과 개수: '+ totalEmotionCount); // len_emotion 을 넣으면 'undefined' 가 출력된다..
+                            
+                            $('#emotion-container').append(emotionCountElement) 
+                            
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
                             // alert("통신 실패.")
@@ -248,18 +266,20 @@
             <div class="row g-5" style="margin-bottom:200px">
                 <div class="col-lg-6 mx-auto wow fadeInUp" data-wow-delay="0.5s" style="width:70%">
                     <h2 class="mb-4 text-primary-gradient flex-shrink-0" style="font-family: 'Poppins', sans-serif;">Comments</h2>
-                    <p class="mb-4">Shows the top 5 comments with the most empathy.</p> 
-                    <form style="font-family: 'Poppins', sans-serif; height: 700px;background-color:transparent;border:none">
+                    <p class="mb-4">And below, it shows the top 5 comments with the most empathy.</p>
+                    <form style="font-family: 'Poppins', sans-serif; background-color:transparent;border:none">
                         <div class="row g-3">
                             <div class="col-12">
                                 <div class="form-floating">
                                     <div id="comments-container"></div>
+                                    {% comment %} <div id="emotion-container"></div> {% endcomment %}
                                 </div>
                             </div>
                         </div>
                     </form>
                     <div class="row g-4 mb-4">
                         <h3></h3>
+                        <p>After collecting the number of comments up to 100, it displays a percentage based on whether people's reactions to the issue are positive or negative.</p> 
                         <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                             <div class="d-flex">
                                 <i class="fa fa-smile fa-2x text-primary-gradient flex-shrink-0"></i>
@@ -316,13 +336,16 @@
                        href="https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=realm&dataSetSn=97">AI
                         Hub 문서요약 텍스트</a>
                     <a class="btn btn-link-FinetunedKobart text-white"
-                       href="https://huggingface.co/galaxyhm/kobartv2-summarizer-using_data">fine-tuned KoBART</a>
+                       href="https://huggingface.co/galaxyhm/kobartv2-summarizer-using_data">ine-tuned KoBART</a>
                     {% comment %} <a class="btn btn-link" href="">Support</a> {% endcomment %}
                 </div>
                 <div class="col-md-8 col-lg-4">
                     <p class="section-title text-white h4 mb-4">Address<span></span></p>
-                    <a class="btn btn-link-Hyeonmin-github text-white"
-                       href="https://huggingface.co/galaxyhm/kobartv2-summarizer-using_data">gogamza/KoBART-base-v2</a>
+                    {% comment %} 현민이 git 주소 {% endcomment %}
+                    <a class="text-white"
+                        href="https://github.com/galaxyhm">
+                    <i class="fa fa-duotone fa-poo me-3"></i>github/galaxyhm</a>
+                       
                     <p><i class="fa fa-duotone fa-poo me-3"></i>123 Street, New York, USA</p>
                     <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
                     <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
